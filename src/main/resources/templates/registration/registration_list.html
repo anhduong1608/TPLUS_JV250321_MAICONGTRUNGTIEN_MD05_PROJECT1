@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Quản lý đăng ký</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 220px;
+            background: #0d6efd;
+            color: white;
+            padding: 20px;
+        }
+        .sidebar a {
+            color: white;
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+        .sidebar a:hover, .sidebar .active {
+            background: #0b5ed7;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h4 class="mb-4">Admin Panel</h4>
+    <a th:href="@{/admin/home}">🏠 Dashboard</a>
+    <a th:href="@{/admin/course_management}">📚 Course Management</a>
+    <a th:href="@{/admin/users}">👨‍🎓 Students</a>
+    <a th:href="@{/admin/registrations}" class="active">📝 Register</a>
+</div>
+
+<!-- Content -->
+<div class="content">
+    <h2 class="mb-4 text-center">Danh sách đăng ký khóa học</h2>
+
+    <!-- Bộ lọc -->
+    <form th:action="@{/admin/registrations}" method="get" class="row mb-4 g-2">
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option th:value="''" th:selected="${status == null}">-- Tất cả trạng thái --</option>
+                <option th:value="WAITING" th:selected="${status?.name() == 'WAITING'}">Chờ duyệt</option>
+                <option th:value="CONFIRM" th:selected="${status?.name() == 'CONFIRM'}">Đã duyệt</option>
+                <option th:value="DENIED" th:selected="${status?.name() == 'DENIED'}">Từ chối</option>
+                <option th:value="CANCEL" th:selected="${status?.name() == 'CANCEL'}">Hủy</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <input type="text" name="keyword" class="form-control"
+                   placeholder="Tìm theo tên khóa học..."
+                   th:value="${keyword}">
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" type="submit">Lọc</button>
+        </div>
+    </form>
+
+    <!-- Bảng hiển thị danh sách -->
+    <div class="card shadow">
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0 align-middle text-center">
+                <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Sinh viên</th>
+                    <th>Khóa học</th>
+                    <th>Ngày đăng ký</th>
+                    <th>Trạng thái</th>
+                    <th class="text-center">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="reg, stat : ${registrations}">
+                    <td th:text="${stat.index + 1 + registrations.pageable.pageNumber * registrations.pageable.pageSize}"></td>
+                    <td th:text="${reg.student.name}"></td>
+                    <td th:text="${reg.course.name}"></td>
+                    <td th:text="${#temporals.format(reg.registeredAt, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td>
+                        <span th:classappend="
+                                ${reg.status.name() == 'WAITING'} ? 'badge bg-warning' :
+                                (${reg.status.name() == 'CONFIRM'} ? 'badge bg-success' :
+                                (${reg.status.name() == 'DENIED'} ? 'badge bg-danger' : 'badge bg-secondary'))"
+                              th:text="${reg.status}">
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            <form th:action="@{/admin/registrations/{id}/approve(id=${reg.id})}" method="post"
+                                  th:if="${reg.status.name() == 'WAITING'}">
+                                <button type="submit" class="btn btn-sm btn-success">Duyệt</button>
+                            </form>
+
+                            <form th:action="@{/admin/registrations/{id}/deny(id=${reg.id})}" method="post"
+                                  th:if="${reg.status.name() == 'WAITING'}">
+                                <button type="submit" class="btn btn-sm btn-danger">Từ chối</button>
+                            </form>
+
+                            <form th:action="@{/admin/registrations/{id}/cancel(id=${reg.id})}" method="post"
+                                  th:if="${reg.status.name() == 'CONFIRM'}">
+                                <button type="submit" class="btn btn-sm btn-warning">Hủy</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${registrations.isEmpty()}">
+                    <td colspan="6" class="text-center text-muted">Không có dữ liệu</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Phân trang -->
+    <nav th:if="${registrations.totalPages > 1}" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${registrations.first} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/admin/registrations(page=${registrations.number - 1}, size=${registrations.size}, status=${status}, keyword=${keyword})}">
+                    Trước
+                </a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, registrations.totalPages - 1)}"
+                th:classappend="${i == registrations.number} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/admin/registrations(page=${i}, size=${registrations.size}, status=${status}, keyword=${keyword})}"
+                   th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${registrations.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/admin/registrations(page=${registrations.number + 1}, size=${registrations.size}, status=${status}, keyword=${keyword})}">
+                    Sau
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+</div>
+
+</body>
+</html>
