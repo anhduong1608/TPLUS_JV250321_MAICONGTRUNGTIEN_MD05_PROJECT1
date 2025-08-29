@@ -57,7 +57,7 @@ public class AdminController {
                                       RedirectAttributes redirectAttributes) {
         if (!isAdmin(session)) {
             redirectAttributes.addFlashAttribute("error", "Bạn không có quyền truy cập!");
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         Pageable pageable = PageRequest.of(page, size);
@@ -102,7 +102,7 @@ public class AdminController {
                             RedirectAttributes redirectAttributes) throws IOException {
         if (!isAdmin(session)) {
             redirectAttributes.addFlashAttribute("error", "Bạn không có quyền truy cập!");
-            return "redirect:/login";
+            return "redirect:/";
         }
         if (result.hasErrors()) {
             return "admin/add_course";
@@ -154,7 +154,7 @@ public class AdminController {
                                HttpSession session) throws IOException {
         if (!isAdmin(session)) {
             redirectAttributes.addFlashAttribute("error", "Bạn không có quyền truy cập!");
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         if (bindingResult.hasErrors()) {
@@ -197,7 +197,7 @@ public class AdminController {
                                HttpSession session) {
         if (!isAdmin(session)) {
             redirectAttributes.addFlashAttribute("error", "Bạn không có quyền truy cập!");
-            return "redirect:/login";
+            return "redirect:/";
         }
         boolean deleted = courseService.deleteCourse(id);
         if (!deleted) {
@@ -217,7 +217,7 @@ public class AdminController {
                                    RedirectAttributes redirectAttributes) {
         if (!isAdmin(session)) {
             redirectAttributes.addFlashAttribute("error", "Bạn không có quyền truy cập!");
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         Pageable pageable = PageRequest.of(page, size);
@@ -246,7 +246,7 @@ public class AdminController {
                             RedirectAttributes redirectAttributes) {
         if (!isAdmin(session)) {
             redirectAttributes.addFlashAttribute("error", "Bạn không có quyền truy cập!");
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
@@ -269,7 +269,7 @@ public class AdminController {
                                    HttpSession session) {
         if (!isAdmin(session)) {
             redirectAttributes.addFlashAttribute("error", "Bạn không có quyền truy cập!");
-            return "redirect:/login";
+            return "redirect:/";
         }
         userService.changeStatus(id);
         redirectAttributes.addFlashAttribute("success", "Cập nhật trạng thái thành công!");
@@ -294,7 +294,7 @@ public class AdminController {
 
         if (!isAdmin(session)) {
             redirectAttributes.addFlashAttribute("error", "Bạn không có quyền truy cập!");
-            return "redirect:/login";
+            return "redirect:/";
         }
         if (userService.existsEmail(user.getEmail())) {
             result.rejectValue("email", "error.user", "Email đã tồn tại");
@@ -319,7 +319,7 @@ public class AdminController {
 
         if (!isAdmin(session)) {
             redirectAttributes.addFlashAttribute("error", "Bạn không có quyền truy cập!");
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         return userService.getUserById(id)
@@ -342,7 +342,7 @@ public class AdminController {
 
         if (!isAdmin(session)) {
             redirectAttributes.addFlashAttribute("error", "Bạn không có quyền truy cập!");
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         User existingUser = userService.getUserById(id).orElse(null);
@@ -377,7 +377,7 @@ public class AdminController {
                              HttpSession session) {
         if (!isAdmin(session)) {
             redirectAttributes.addFlashAttribute("error", "Bạn không có quyền truy cập!");
-            return "redirect:/login";
+            return "redirect:/";
         }
         userService.deleteUser(id);
         redirectAttributes.addFlashAttribute("success", "Xóa học viên thành công!");
@@ -386,7 +386,7 @@ public class AdminController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute("user");
-        return "redirect:/login";
+        return "redirect:/";
     }
 
 }

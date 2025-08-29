@@ -58,13 +58,18 @@ public class AuthController {
         return "redirect:/auth/login";
     }
 
-    @GetMapping("/login")
+    @GetMapping
     public String loginForm(Model model) {
         model.addAttribute("dto", new LoginDTO());
         return "auth/login";
     }
+    @GetMapping("/login")
+    public String loginForm1(Model model) {
+        model.addAttribute("dto", new LoginDTO());
+        return "auth/login";
+    }
 
-    @PostMapping
+    @PostMapping("/login")
     public String login(@Valid @ModelAttribute("dto") LoginDTO dto,
                         BindingResult result,
                         HttpSession session,

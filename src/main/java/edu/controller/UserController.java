@@ -54,7 +54,7 @@ public class UserController {
                                  HttpSession session, RedirectAttributes redirectAttributes) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
-            return "redirect:/auth/login";
+            return "redirect:/";
         }
 
         Course course = courseService.findById(courseId);
@@ -103,7 +103,7 @@ public class UserController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute("user");
-        return "redirect:/login";
+        return "redirect:/";
     }
 
     @GetMapping("/profile")
@@ -111,7 +111,7 @@ public class UserController {
         User currentUser = (User) session.getAttribute("user");
 
         if (currentUser == null) {
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         UserDTO dto = UserDTO.builder()
@@ -136,7 +136,7 @@ public class UserController {
 
         User currentUser = (User) session.getAttribute("user");
         if (currentUser == null) {
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         if (result.hasErrors()) {
@@ -172,7 +172,7 @@ public class UserController {
     public String showChangePasswordForm(HttpSession session, Model model) {
         User loggedInUser = (User) session.getAttribute("user");
         if (loggedInUser == null) {
-            return "redirect:/login";
+            return "redirect:/";
         }
         model.addAttribute("changePasswordDTO", new ChangePasswordDTO());
         return "user/change_password";
@@ -186,7 +186,7 @@ public class UserController {
                                  Model model) {
         User loggedInUser = (User) session.getAttribute("user");
         if (loggedInUser == null) {
-            return "redirect:/login";
+            return "redirect:/";
         }
 
 
