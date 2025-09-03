@@ -49,7 +49,7 @@ public class AdminController {
 
     @GetMapping("/home")
     public String listCoursesForAdmin(@RequestParam(defaultValue = "0") int page,
-                                      @RequestParam(defaultValue = "5") int size,
+                                      @RequestParam(defaultValue = "7") int size,
                                       @RequestParam(defaultValue = "5") int limit,
                                       @RequestParam(required = false) String keyword,
                                       Model model,
@@ -379,8 +379,12 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("error", "Bạn không có quyền truy cập!");
             return "redirect:/";
         }
-        userService.deleteUser(id);
-        redirectAttributes.addFlashAttribute("success", "Xóa học viên thành công!");
+        try {
+            userService.deleteUser(id);
+            redirectAttributes.addFlashAttribute("success", "Xóa học viên thành công!");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
         return "redirect:/admin/users";
     }
     @GetMapping("/logout")

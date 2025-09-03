@@ -8,11 +8,42 @@
         body {
             background-color: #0e1525;
             font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container-fluid {
+            height: 100vh;
+        }
+        .left-panel {
+            background: url('/img/pngtree-science-and-security-style-background-template-design-picture-image_1246229.jpg') no-repeat center center;
+            background-size: cover;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+        .overlay-text h2 {
+            font-size: 36px;
+            font-weight: bold;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+        }
+        .overlay-text p {
+            font-size: 18px;
+            margin-top: 10px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+        }
+        .form-panel {
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
         }
         .card-custom {
-            border-radius: 15px;
-            padding: 30px;
-            background: #fff;
+            width: 100%;
+            max-width: 400px;
         }
         .form-control, .form-select {
             border-radius: 10px;
@@ -23,77 +54,61 @@
             font-size: 16px;
             padding: 10px;
         }
-        .left-panel {
-            background: url('/img/pngtree-science-and-security-style-background-template-design-picture-image_1246229.jpg') no-repeat center center;
-            background-size: cover;
-            border-radius: 15px;
-            position: relative;
-            color: white;
-        }
-        .overlay-text {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            font-size: 20px;
-            font-weight: bold;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
-        }
     </style>
 </head>
 <body>
-<div class="container py-5">
-    <div class="row justify-content-center align-items-center">
-        <div class="col-md-10">
-            <div class="row g-0 shadow-lg rounded-4 overflow-hidden">
-                <!-- Panel trái -->
-                <div class="col-md-6 left-panel d-flex align-items-center justify-content-center">
-                    <div class="overlay-text text-center">
-                        <h2>Welcome 👋</h2>
-                        <p>Create your account and join us today!</p>
+<div class="container-fluid">
+    <div class="row h-100">
+        <!-- Cột ảnh -->
+        <div class="col-md-6 left-panel">
+            <div class="overlay-text text-center">
+                <h2>Welcome 👋</h2>
+                <p>Create your account and join us today!</p>
+            </div>
+        </div>
+
+        <!-- Cột form -->
+        <div class="col-md-6 form-panel">
+            <div class="card-custom">
+                <h3 class="text-center mb-4">Đăng ký tài khoản</h3>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+                <form th:action="@{/auth/register}" th:object="${dto}" method="post">
+                    <div class="mb-3">
+                        <input type="text" th:field="*{name}" class="form-control" placeholder="Họ tên">
+                        <small class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
                     </div>
-                </div>
-                <!-- Panel phải -->
-                <div class="col-md-6 bg-white d-flex align-items-center">
-                    <div class="card-custom w-100">
-                        <h3 class="text-center mb-4">Đăng ký tài khoản</h3>
-                        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-                        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-                        <form th:action="@{/auth/register}" th:object="${dto}" method="post">
-                            <div class="mb-3">
-                                <input type="text" th:field="*{name}" class="form-control" placeholder="Họ tên">
-                                <small class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
-                            </div>
-                            <div class="mb-3">
-                                <input type="date" th:field="*{dob}" class="form-control" placeholder="Ngày sinh">
-                                <small class="text-danger" th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}"></small>
-                            </div>
-                            <div class="mb-3">
-                                <input type="email" th:field="*{email}" class="form-control" placeholder="Email">
-                                <small class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
-                            </div>
-                            <div class="mb-3">
-                                <select th:field="*{sex}" class="form-select">
-                                    <option value="">-- Giới tính --</option>
-                                    <option value="1">Nam</option>
-                                    <option value="0">Nữ</option>
-                                </select>
-                                <small class="text-danger" th:if="${#fields.hasErrors('sex')}" th:errors="*{sex}"></small>
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" th:field="*{phone}" class="form-control" placeholder="Số điện thoại">
-                                <small class="text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
-                            </div>
-                            <div class="mb-3">
-                                <input type="password" th:field="*{password}" class="form-control" placeholder="Mật khẩu">
-                                <small class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100 btn-custom">Đăng ký</button>
-                        </form>
-                        <div class="text-center mt-3">
-                            <span class="me-2">Đã có tài khoản?</span>
-                            <a th:href="@{/auth/login}" class="text-decoration-none fw-bold">Đăng nhập</a>
-                        </div>
+                    <div class="mb-3">
+                        <input type="date" th:field="${dob}" class="form-control" placeholder="Ngày sinh">
+                        <small class="text-danger" th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}"></small>
                     </div>
+                    <div class="mb-3">
+                        <input type="email" th:field="*{email}" class="form-control" placeholder="Email">
+                        <small class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                    </div>
+                    <div class="mb-3">
+                        <select th:field="*{sex}" class="form-select">
+                            <option value="">-- Giới tính --</option>
+                            <option value="1">Nam</option>
+                            <option value="0">Nữ</option>
+                        </select>
+                        <small class="text-danger" th:if="${#fields.hasErrors('sex')}" th:errors="*{sex}"></small>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" th:field="*{phone}" class="form-control" placeholder="Số điện thoại">
+                        <small class="text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" th:field="*{password}" class="form-control" placeholder="Mật khẩu">
+                        <small class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 btn-custom">Đăng ký</button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <span class="me-2">Đã có tài khoản?</span>
+                    <a th:href="@{/auth/login}" class="text-decoration-none fw-bold">Đăng nhập</a>
                 </div>
             </div>
         </div>

@@ -28,11 +28,11 @@ public class Registration {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    // registered_at: DEFAULT CURRENT_TIMESTAMP
+
     @Column(name = "registered_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime registeredAt;
 
-    // status: ENUM
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "ENUM('WAITING','DENIED','CANCEL','CONFIRM') DEFAULT 'WAITING'")
     private RegistrationStatus status;

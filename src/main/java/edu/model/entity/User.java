@@ -54,5 +54,5 @@ public class User {
     private Role role;
 
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
-    private Boolean status;
+    private Boolean status = true;
 }

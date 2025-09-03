@@ -18,7 +18,7 @@ public class RegisterUserDTO {
 
     @NotNull(message = "Ngày sinh không được để trống")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate dob; // dd/MM/yyyy → lát sẽ convert sang LocalDate
+    private LocalDate dob;
 
     @NotBlank(message = "Email không được để trống")
     @Email(message = "Email is not valid")

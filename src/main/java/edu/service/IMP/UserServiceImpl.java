@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
                 .password(BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt(10)))
                 .createAt(LocalDate.now())
                 .role(Role.STUDENT)
+                .status(true)
                 .build();
 
         return userRepository.save(user);
@@ -100,10 +101,23 @@ public class UserServiceImpl implements UserService {
         });
     }
 
+
     @Override
     public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User không tồn tại!"));
+
+        if (user.getRole() == Role.ADMIN) {
+            throw new RuntimeException("Không thể xóa tài khoản ADMIN!");
+        }
+
+        if (Boolean.TRUE.equals(user.getStatus())) {
+            throw new RuntimeException("Bạn cần khóa tài khoản trước khi xóa!");
+        }
+
+        userRepository.delete(user);
     }
+
 
     @Override
     public boolean existsEmail(String email) {
